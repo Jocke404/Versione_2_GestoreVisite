@@ -1,0 +1,12 @@
+{
+    "java.project.referencedLibraries": {
+        "include": [
+            "lib\\mysql-connector-j-9.2.0.jar"
+        ],
+    },
+    "java.project.sourcePaths": [
+        "."
+    ],
+    "java.dependency.packagePresentation": "hierarchical",
+    "java.jdt.ls.java.home": "C:/Program Files/Java/jdk-24"
+}

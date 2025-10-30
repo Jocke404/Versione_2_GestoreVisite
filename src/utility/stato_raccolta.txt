@@ -1,0 +1,4 @@
+stato_ciclo=RACCOLTA_APERTA
+mese_raccolta=12
+anno_raccolta=2025
+disponibilita_volontari=
