@@ -6,8 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.sql.Date;
 
 import src.controller.ThreadPoolController;
@@ -15,10 +17,8 @@ import src.model.Volontario;
 
 public class DisponibilitaManager{
 
-    private final VolontariManager volontariManager = new VolontariManager(ThreadPoolController.getInstance());
-
     // Salva la mappa Volontario -> List<LocalDate> nel DB
-    public void salvaDisponibilitaVolontari(Map<Volontario, List<LocalDate>> merged) {
+    public void salvaDisponibilitaVolontari(Map<Volontario, List<LocalDate>> merged, VolontariManager volontariManager) {
         if (merged == null || merged.isEmpty()) {
             return;
         }
@@ -89,6 +89,29 @@ public class DisponibilitaManager{
         }
 
         return disponibilita;
+    }
+
+    public ConcurrentHashMap<String, List<LocalDate>> getDisponibilitaMap(VolontariManager volontariManager) {
+        ConcurrentHashMap<String, List<LocalDate>> disponibilitaMap = new ConcurrentHashMap<>();
+        String sql = "SELECT volontario_id, data_disponibile FROM disponibilita";
+
+        try (Connection conn = DatabaseConnection.connect();
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                int volontarioId = rs.getInt("volontario_id");
+                Date sqlDate = rs.getDate("data_disponibile");
+                LocalDate data = sqlDate.toLocalDate();
+
+                disponibilitaMap.computeIfAbsent(volontariManager.getEmailById(volontarioId), k -> new ArrayList<>()).add(data);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Errore durante il caricamento delle disponibilità: " + e.getMessage());
+        }
+
+        return disponibilitaMap;
     }
 
 }

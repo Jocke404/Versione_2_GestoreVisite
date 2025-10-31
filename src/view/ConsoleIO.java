@@ -6,10 +6,10 @@ import java.time.LocalTime;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import lib.InputDati;
@@ -23,11 +23,18 @@ import src.model.db.VisiteManagerDB;
 import src.model.ValidatoreVisite;
 import src.model.db.LuoghiManager;
 import src.model.db.VolontariManager;
+import src.model.db.DisponibilitaManager;
 
 public class ConsoleIO implements View{
 
-    private final Map<String, List<LocalDate>> disponibilitaVolontari = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, List<LocalDate>> disponibilitaVolontari = new ConcurrentHashMap<>();
     private final List<Integer> durataList = List.of(30, 60, 90, 120);
+    private final DisponibilitaManager disponibilitaManager = new DisponibilitaManager();
+
+    public void caricaDisponibilitaMap(VolontariManager volontariManager) {
+        disponibilitaVolontari.clear();
+        disponibilitaVolontari = disponibilitaManager.getDisponibilitaMap(volontariManager);
+    }
 
     public void mostraMessaggio(String messaggio) {
         System.out.println(messaggio);
@@ -145,7 +152,8 @@ public class ConsoleIO implements View{
         String nuovoTitolo = InputDati.leggiStringaNonVuota("Titolo della visita: ");
         int durata = InputDati.leggiIntero("Durata in minuti: ", 30, 300);
         LocalTime orario = InputDati.leggiOra("Orario di inizio (HH:MM): ");
-        List<String> volontariConDisp = getVolontariConDisponibilita();
+        caricaDisponibilitaMap(volontariManager);
+        List<String> volontariConDisp = getVolontariConDisponibilita(volontariManager);
         if (volontariConDisp.isEmpty()) {
             mostraMessaggio("Nessun volontario ha inserito disponibilità.");
             return null;
@@ -255,11 +263,15 @@ public class ConsoleIO implements View{
     }
 
     // --- METODI DI SUPPORTO PURI ---
-    private List<String> getVolontariConDisponibilita() {
+    private List<String> getVolontariConDisponibilita(VolontariManager volontariManager) {
         List<String> volontariConDisp = new ArrayList<>();
 
-        for (Entry<String, List<LocalDate>> entry : disponibilitaVolontari.entrySet()) {
-            if (!entry.getValue().isEmpty()) volontariConDisp.add(entry.getKey());
+        for (Map.Entry<String, List<LocalDate>> entry : disponibilitaVolontari.entrySet()) {
+            String email = entry.getKey();
+            List<LocalDate> dateDisponibili = entry.getValue();
+            if (dateDisponibili != null && !dateDisponibili.isEmpty()) {
+                volontariConDisp.add(email);
+            }
         }
         return volontariConDisp;
     }

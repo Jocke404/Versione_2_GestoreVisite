@@ -43,7 +43,7 @@ public class Disponibilita {
                 }
             }
             // Salva tutte le disponibilità correnti
-            salvaStatoERaccolta(disponibilitaVolontari);
+            salvaStatoERaccolta(disponibilitaVolontari, volontariManager);
         }
     }
 
@@ -55,20 +55,20 @@ public class Disponibilita {
     }
 
     // Salva in memoria e persiste per il singolo volontario
-    public void salvaDisponibilita(Volontario volontario, List<LocalDate> dateDisponibili) {
+    public void salvaDisponibilita(Volontario volontario, List<LocalDate> dateDisponibili, VolontariManager volontariManager) {
         if (volontario == null) return;
         List<LocalDate> copy = dateDisponibili == null ? new ArrayList<>() : new ArrayList<>(dateDisponibili);
         disponibilitaVolontari.put(volontario, copy);
 
         // Persisti tutte le disponibilità in memoria (semplice strategia)
-        salvaStatoERaccolta(disponibilitaVolontari);
+        salvaStatoERaccolta(disponibilitaVolontari, volontariManager);
     }
 
     // Salva le disponibilità (mappa Volontario -> List<LocalDate>) nel DB e aggiorna lo stato raccolta
-    public void salvaStatoERaccolta(Map<Volontario, List<LocalDate>> disponibilita) {
+    public void salvaStatoERaccolta(Map<Volontario, List<LocalDate>> disponibilita, VolontariManager volontariManager) {
         if (disponibilita == null) return;
         applicationSettings.setStatoRaccolta(getStato_raccolta());
-        disponibilitaManager.salvaDisponibilitaVolontari(disponibilita);
+        disponibilitaManager.salvaDisponibilitaVolontari(disponibilita, volontariManager);
     }
 
     // Utilità: trova giorni (int) disponibili per un volontario in uno YearMonth

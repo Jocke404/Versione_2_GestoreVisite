@@ -270,4 +270,20 @@ public class VolontariManager extends DatabaseManager {
         aggiornaPswVolontario(email, nuovaPassword);
     }
 
+    public String getEmailById(int volontarioId) {
+        String sql = "SELECT email FROM volontari WHERE id = ?";
+        try (Connection conn = DatabaseConnection.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, volontarioId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("email");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Errore durante il recupero dell'email del volontario: " + e.getMessage());
+        }
+        return null;
+    }
+
 }

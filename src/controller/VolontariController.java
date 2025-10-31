@@ -48,7 +48,7 @@ public class VolontariController {
         consoleIO.mostraCalendarioMese(ym, giorniDisponibili);
         List<Integer> giorniSelezionati = consoleIO.chiediGiorniDisponibili(ym, new ArrayList<>(giorniDisponibili));
         List<LocalDate> dateDisponibili = validatore.filtraDateDisponibili(giorniSelezionati, ym);
-        disponibilita.salvaDisponibilita(volontarioCorrente, dateDisponibili);
+        disponibilita.salvaDisponibilita(volontarioCorrente, dateDisponibili, volontariManager);
 
 
     }

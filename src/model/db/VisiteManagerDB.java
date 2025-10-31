@@ -68,7 +68,7 @@ public class VisiteManagerDB extends DatabaseManager {
 
     // Metodo per aggiungere una visita al database
     protected void aggiungiVisita(Visita visita) {
-        String inserisciSql = "INSERT INTO visite (luogo, titolo, tipo_visita, volontario, data, stato, max_persone, ora_inizio, durata_minuti, min_partecipanti, biglietto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String inserisciSql = "INSERT INTO visite (luogo, titolo, tipo_visita, volontario, data, stato, max_persone, ora_inizio, durata_minuti, min_partecipanti, biglietto, barriere_architettoniche) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             try (Connection conn = DatabaseConnection.connect();
                  PreparedStatement pstmt = conn.prepareStatement(inserisciSql)) {
@@ -84,6 +84,7 @@ public class VisiteManagerDB extends DatabaseManager {
                 pstmt.setInt(9, visita.getDurataMinuti());
                 pstmt.setInt(10, visita.getMinPartecipanti());
                 pstmt.setBoolean(11, visita.isBiglietto());
+                pstmt.setBoolean(12, visita.getBarriereArchitettoniche());
                 pstmt.executeUpdate();
     
                 consoleIO.mostraMessaggio("Visita aggiunta con successo.");
