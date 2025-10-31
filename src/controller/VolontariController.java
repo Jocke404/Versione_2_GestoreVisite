@@ -35,10 +35,10 @@ public class VolontariController {
 
     public void raccogliDisponibilitaVolontario() {
         LocalDate oggi = LocalDate.now();
-        // if (oggi.getDayOfMonth() > 15) {
-        //     consoleIO.mostraMessaggio("Non è possibile inserire disponibilità dopo il 15 del mese corrente.");
-        //     return;
-        // }
+        if (oggi.getDayOfMonth() > 15) {
+            consoleIO.mostraMessaggio("Non è possibile inserire disponibilità dopo il 15 del mese corrente.");
+            return;
+        }
         YearMonth ym = YearMonth.now().plusMonths(1);
         List<Integer> giorniDisponibili = validatore.trovaGiorniDisponibili(volontarioCorrente, ym);
         if (giorniDisponibili.isEmpty()) {

@@ -21,7 +21,7 @@ public class AmbitoTerritoriale {
     private Set<String> ambitoTerritoriale = new HashSet<>();
     private final ConsoleIO consoleIO = new ConsoleIO();
 
-    public void verificaOAggiornaAmbitoTerritoriale() {
+    public void verificaAggiornaAmbitoTerritoriale() {
         if (!isAmbitoConfigurato()) {
             scegliAmbitoTerritoriale();
             salvaAmbitoTerritoriale();

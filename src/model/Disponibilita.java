@@ -16,11 +16,12 @@ public class Disponibilita {
     private final DisponibilitaManager disponibilitaManager = new DisponibilitaManager();
     private final ApplicationSettingsDAO applicationSettings = new ApplicationSettingsDAO();
     
-    // Ritorna true se la raccolta è aperta (esempio: dal giorno 16 compreso in poi)
+    
     public Boolean getStato_raccolta() {
         LocalDate oggi = LocalDate.now();
         int giorno = oggi.getDayOfMonth();
-        return giorno >= 16;
+        // true se siamo tra il 1° e il 15° giorno del mese (inclusi)
+        return giorno >= 1 && giorno <= 15;
     }
 
     // Sincronizza la mappa delle disponibilità con il DB (per ogni volontario del manager)
@@ -30,6 +31,9 @@ public class Disponibilita {
             List<LocalDate> dates = leggiDisponibilita(volontario, volontariManager);
             disponibilitaVolontari.put(volontario, dates != null ? new ArrayList<>(dates) : new ArrayList<>());
         });
+        if (getStato_raccolta()) {
+            gestisciVolontariSenzaDisponibilita(volontariManager);
+        }
     }
 
     // Assicura che i volontari senza disponibilità abbiano una lista vuota e salva (se richiesto)
@@ -60,7 +64,6 @@ public class Disponibilita {
         List<LocalDate> copy = dateDisponibili == null ? new ArrayList<>() : new ArrayList<>(dateDisponibili);
         disponibilitaVolontari.put(volontario, copy);
 
-        // Persisti tutte le disponibilità in memoria (semplice strategia)
         salvaStatoERaccolta(disponibilitaVolontari, volontariManager);
     }
 
