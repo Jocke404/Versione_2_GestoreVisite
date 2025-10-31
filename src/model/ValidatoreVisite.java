@@ -288,26 +288,11 @@ public class ValidatoreVisite {
     }
 
     private boolean isTipoVisitaProgrammabileInGiorno(TipiVisitaClass tipoVisita, String giornoSettimana) {
-        String tipo = tipoVisita.toString().trim().toUpperCase();
         String giorno = giornoSettimana.trim().toUpperCase();
-
-        switch (tipo) {
-            case "ENOGASTRONOMICA":
-                // Venerdì, Sabato, Domenica
-                return giorno.equals("FRIDAY") || giorno.equals("SATURDAY") || giorno.equals("SUNDAY");
-            case "LABBAMBINI":
-                // Lunedì, Martedì, Mercoledì, Giovedì
-                return giorno.equals("MONDAY") || giorno.equals("TUESDAY") || giorno.equals("WEDNESDAY") || giorno.equals("THURSDAY");
-            case "STORICA":
-                // Martedì, Giovedì, Sabato
-                return giorno.equals("TUESDAY") || giorno.equals("THURSDAY") || giorno.equals("SATURDAY");
-            case "SCIENTIFICA":
-                // Mercoledì, Venerdì, Domenica
-                return giorno.equals("WEDNESDAY") || giorno.equals("FRIDAY") || giorno.equals("SUNDAY");
-            default:
-                // Se il tipo non è riconosciuto, non permette nessun giorno
-                return false;
+        if (giorno.equals("SATURDAY") || giorno.equals("SUNDAY")) {
+            return false;
         }
+        return true;
     }
 
 }

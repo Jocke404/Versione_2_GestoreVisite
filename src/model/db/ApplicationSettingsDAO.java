@@ -143,4 +143,15 @@ public class ApplicationSettingsDAO {
         sb.append("]");
         return sb.toString();
     }
+
+    public void setStatoRaccolta(Boolean stato) {
+        try (Connection conn = DatabaseConnection.connect()) {
+            try (PreparedStatement ps = conn.prepareStatement(UPDATE_SQL)) {
+                ps.setBoolean(1, stato);
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            System.err.println("ApplicationSettingsDAO.setStatoRaccolta error: " + e.getMessage());
+        }
+    }
 }

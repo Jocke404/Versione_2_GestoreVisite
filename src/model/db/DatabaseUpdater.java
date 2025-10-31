@@ -13,11 +13,6 @@ import java.util.concurrent.ExecutorService;
 
 
 public class DatabaseUpdater {
-    // HashMap per memorizzare i dati sincronizzati
-    // private ConcurrentHashMap<String, Volontario> volontariMap = VolontariManager.getInstance().getVolontariMap();
-    // private ConcurrentHashMap<String, Configuratore> configuratoriMap = ConfiguratoriManager.getInstance().getConfiguratoriMap();
-    // private ConcurrentHashMap<String, Luogo> luoghiMap = LuoghiManager.getInstance().getLuoghiMap();
-    // private ConcurrentHashMap<Integer, Visite> visiteMap = VisiteManagerDB.getInstance().getVisiteMap();
     private ConcurrentHashMap<String, TemporaryCredential> temporaryCredentials = new ConcurrentHashMap<>();
     private ConsoleIO consoleIO = new ConsoleIO();
     

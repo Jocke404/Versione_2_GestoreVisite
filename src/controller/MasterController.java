@@ -56,7 +56,7 @@ public class MasterController {
         viewUtilita = ViewUtilita.getInstance();
         visiteController = new VisiteController(visiteManager);
         luoghiController = new LuoghiController(luoghiManager, viewUtilita);
-        
+        validatore = new ValidatoreVisite(visiteManager);
 
         ConsoleIO consoleIO = new ConsoleIO();
         CredentialManager credentialManager = new CredentialManager(
@@ -122,13 +122,16 @@ public class MasterController {
         Menu menu = null;
         if (isAuth) {
             System.out.println("Buongiorno " + utenteCorrente.getNome() + "!");
-            if (utenteCorrente instanceof Configuratore) {
-                if (!ambitoTerritoriale.isAmbitoConfigurato()) {
+            if (utenteCorrente instanceof Configuratore){
+                if(!ambitoTerritoriale.isAmbitoConfigurato()){
                     ambitoTerritoriale.scegliAmbitoTerritoriale();
                 } else {
                     ambitoTerritoriale.caricaAmbitoTerritoriale();
                 }
                 menu = menuFactory.creaMenuConfiguratore(configuratoriController);
+            } else if (utenteCorrente instanceof Volontario){
+                volontariController.volontarioCorrente = (Volontario) utenteCorrente;  
+                menu = menuFactory.creaMenuVolontario(volontariController);
             } else {
                 consoleIO.mostraMessaggio("Errore: tipo di utente non riconosciuto.");
             }

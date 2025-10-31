@@ -1,8 +1,5 @@
 package src.model;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -11,134 +8,78 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import src.model.db.VolontariManager;
+import src.model.db.DisponibilitaManager;
+import src.model.db.ApplicationSettingsDAO;
 
 public class Disponibilita {
-    private final Map<String, List<LocalDate>> disponibilitaVolontari = new ConcurrentHashMap<>();
-
-
-    // Sincronizza la mappa delle disponibilità con il file stato_raccolta.txt
-    public void sincronizzaDisponibilitaVolontari() {
-        Map<String, List<LocalDate>> dalFile = leggiDisponibilitaDaFile();
-        disponibilitaVolontari.clear();
-        disponibilitaVolontari.putAll(dalFile);
+    private final Map<Volontario, List<LocalDate>> disponibilitaVolontari = new ConcurrentHashMap<>();
+    private final DisponibilitaManager disponibilitaManager = new DisponibilitaManager();
+    private final ApplicationSettingsDAO applicationSettings = new ApplicationSettingsDAO();
+    
+    // Ritorna true se la raccolta è aperta (esempio: dal giorno 16 compreso in poi)
+    public Boolean getStato_raccolta() {
+        LocalDate oggi = LocalDate.now();
+        int giorno = oggi.getDayOfMonth();
+        return giorno >= 16;
     }
 
+    // Sincronizza la mappa delle disponibilità con il DB (per ogni volontario del manager)
+    public void sincronizzaDisponibilitaVolontari(VolontariManager volontariManager) {
+        disponibilitaVolontari.clear();
+        volontariManager.getVolontariMap().values().forEach(volontario -> {
+            List<LocalDate> dates = leggiDisponibilita(volontario, volontariManager);
+            disponibilitaVolontari.put(volontario, dates != null ? new ArrayList<>(dates) : new ArrayList<>());
+        });
+    }
+
+    // Assicura che i volontari senza disponibilità abbiano una lista vuota e salva (se richiesto)
     public void gestisciVolontariSenzaDisponibilita(VolontariManager volontariManager) {
         LocalDate oggi = LocalDate.now();
         
-        // Se siamo dopo il giorno 15, segna tutti i volontari che non hanno inserito disponibilità
         if (oggi.getDayOfMonth() > 15) {
             for (Volontario volontario : volontariManager.getVolontariMap().values()) {
-                if (!disponibilitaVolontari.containsKey(volontario.getEmail())) {
-                    // Volontario senza disponibilità -> lista vuota
-                    disponibilitaVolontari.put(volontario.getEmail(), new ArrayList<>());
+                if (!disponibilitaVolontari.containsKey(volontario)) {
+                    disponibilitaVolontari.put(volontario, new ArrayList<>());
                 }
             }
-            salvaStatoERaccolta(disponibilitaVolontari, "RACCOLTA_CHIUSA");
+            // Salva tutte le disponibilità correnti
+            salvaStatoERaccolta(disponibilitaVolontari);
         }
     }
 
-    public static Map<String, List<LocalDate>> leggiDisponibilitaDaFile() {
-        Map<String, List<LocalDate>> disp = new ConcurrentHashMap<>();
-        
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/utility/stato_raccolta.txt"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.startsWith("disponibilita_volontari=")) {
-                    String data = line.substring("disponibilita_volontari=".length());
-                    String[] volontariParts = data.split(";");
-                    
-                    for (String volontarioPart : volontariParts) {
-                        if (volontarioPart.trim().isEmpty()) continue;
-                        
-                        String[] emailDateParts = volontarioPart.split(":");
-                        if (emailDateParts.length == 2) {
-                            String email = emailDateParts[0].trim();
-                            List<LocalDate> date = new ArrayList<>();
-                            
-                            if (!emailDateParts[1].trim().isEmpty()) {
-                                String[] dateParts = emailDateParts[1].split(",");
-                                for (String dateStr : dateParts) {
-                                    if (!dateStr.trim().isEmpty()) {
-                                        date.add(LocalDate.parse(dateStr.trim()));
-                                    }
-                                }
-                            }
-                            
-                            disp.put(email, date);
-                        }
-                    }
-                }
+    // Legge le disponibilità per il singolo volontario dal DB (usa VolontariManager per risolvere l'id)
+    public List<LocalDate> leggiDisponibilita(Volontario volontario, VolontariManager volontariManager) {
+        if (volontario == null) return new ArrayList<>();
+        int id = volontariManager.getIdByEmail(volontario.getEmail());
+        return disponibilitaManager.getDisponibilitaByVolontarioId(id);
+    }
+
+    // Salva in memoria e persiste per il singolo volontario
+    public void salvaDisponibilita(Volontario volontario, List<LocalDate> dateDisponibili) {
+        if (volontario == null) return;
+        List<LocalDate> copy = dateDisponibili == null ? new ArrayList<>() : new ArrayList<>(dateDisponibili);
+        disponibilitaVolontari.put(volontario, copy);
+
+        // Persisti tutte le disponibilità in memoria (semplice strategia)
+        salvaStatoERaccolta(disponibilitaVolontari);
+    }
+
+    // Salva le disponibilità (mappa Volontario -> List<LocalDate>) nel DB e aggiorna lo stato raccolta
+    public void salvaStatoERaccolta(Map<Volontario, List<LocalDate>> disponibilita) {
+        if (disponibilita == null) return;
+        applicationSettings.setStatoRaccolta(getStato_raccolta());
+        disponibilitaManager.salvaDisponibilitaVolontari(disponibilita);
+    }
+
+    // Utilità: trova giorni (int) disponibili per un volontario in uno YearMonth
+    public List<Integer> trovaGiorniDisponibili(Volontario volontario, YearMonth ym) {
+        List<Integer> giorni = new ArrayList<>();
+        List<LocalDate> dates = disponibilitaVolontari.getOrDefault(volontario, new ArrayList<>());
+        for (LocalDate d : dates) {
+            if (d.getYear() == ym.getYear() && d.getMonthValue() == ym.getMonthValue()) {
+                giorni.add(d.getDayOfMonth());
             }
-        } catch (Exception e) {
-            System.err.println("Errore nella lettura di stato_raccolta.txt: " + e.getMessage());
         }
-        return disp;
+        return giorni;
     }
-
-
-    public void salvaDisponibilita(String emailVolontario, List<LocalDate> dateDisponibili) {
-        disponibilitaVolontari.put(emailVolontario, dateDisponibili);
-        salvaStatoERaccolta(disponibilitaVolontari, "RACCOLTA_APERTA");
-    }
-
-    // Salva lo stato raccolta e le disponibilità dei volontari su stato_raccolta.txt
-    public static void salvaStatoERaccolta(Map<String, List<LocalDate>> disponibilita, String statoCiclo) {
-        try {
-            File file = new File("src/utility/stato_raccolta.txt");
-            
-            try (java.io.PrintWriter writer = new java.io.PrintWriter(file, "UTF-8")) {
-                // Scrivi lo stato del ciclo
-                writer.println("stato_ciclo=" + statoCiclo);
-                
-                // Scrivi le disponibilità dei volontari
-                writer.print("disponibilita_volontari=");
-                boolean first = true;
-                
-                for (Map.Entry<String, List<LocalDate>> entry : disponibilita.entrySet()) {
-                    if (!first) {
-                        writer.print(";");
-                    }
-                    first = false;
-                    
-                    writer.print(entry.getKey() + ":");
-                    
-                    // Scrivi le date in formato yyyy-MM-dd
-                    boolean firstDate = true;
-                    for (LocalDate data : entry.getValue()) {
-                        if (!firstDate) {
-                            writer.print(",");
-                        }
-                        firstDate = false;
-                        writer.print(data.toString());
-                    }
-                }
-                writer.println();
-            }
-        } catch (Exception e) {
-            System.err.println("Errore nel salvataggio di stato_raccolta.txt: " + e.getMessage());
-        }
-    }
-
-    public List<LocalDate> calcolaDateDisponibiliVolontario(Volontario volontario, ValidatoreVisite validatoreVisite) {
-        // Controllo se siamo oltre il giorno 15 del mese corrente
-        LocalDate oggi = LocalDate.now();
-        if (oggi.getDayOfMonth() > 15) {
-            return null;
-        }
-        
-        LocalDate meseProssimo = oggi.plusMonths(1);
-        YearMonth ym = YearMonth.of(meseProssimo.getYear(), meseProssimo.getMonthValue());
-        
-        List<Integer> giorniDisponibili = validatoreVisite.trovaGiorniDisponibili(volontario, ym);
-        
-        if (giorniDisponibili.isEmpty()) {
-            return null;
-        }
-
-        List<LocalDate> dateDisponibili = validatoreVisite.filtraDateDisponibili(giorniDisponibili, ym);
-        salvaDisponibilita(volontario.getEmail(), dateDisponibili);
-        return dateDisponibili;
-    }
-
 }
