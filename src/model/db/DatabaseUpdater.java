@@ -134,24 +134,26 @@ public class DatabaseUpdater {
 //Getters e Setters--------------------------------------------------
     public String getTipoUtente(String email, String password){
         String tipo_utente = null;
-        String sql = "SELECT tipo_utente FROM utenti_unificati WHERE email = ? AND password = ?";
-    
+        String sql = "SELECT tipo_utente, password FROM utenti_unificati WHERE email = ?";
+
         try (Connection conn = DatabaseConnection.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-    
-            // Imposta i parametri della query
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
             pstmt.setString(1, email);
-            pstmt.setString(2, password);
-    
+
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    tipo_utente = rs.getString("tipo_utente"); // Recupera il tipo_utente
+                    String dbPassword = rs.getString("password");
+                    // confronto case-sensitive in Java
+                    if (dbPassword != null && dbPassword.equals(password)) {
+                        tipo_utente = rs.getString("tipo_utente");
+                    }
                 }
             }
         } catch (SQLException e) {
             consoleIO.mostraMessaggio("Errore durante la verifica delle credenziali: " + e.getMessage());
         }
-        return tipo_utente != null ? tipo_utente : "Fruitore"; // Restituisce "Fruitore" se tipo_utente è null
+        return tipo_utente;
     }
 
     public boolean isPasswordModificata(String email) {
