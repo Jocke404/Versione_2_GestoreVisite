@@ -23,11 +23,6 @@ public class LuoghiController {
         return List.copyOf(luoghiManager.getLuoghiMap().values());
     }
 
-    //VER.3
-    // public void eliminaLuogo(Luogo luogoDaEliminare) {
-    //     luoghiManager.rimuoviLuogo(luogoDaEliminare);
-    // }
-
     public void aggiornaLuoghi(Luogo luogoDaModificare) {
         luoghiManager.aggiornaLuoghi(luogoDaModificare);
     }

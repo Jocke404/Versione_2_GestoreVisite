@@ -681,11 +681,6 @@ public class ConsoleIO implements View{
         return InputDati.leggiIntero("Seleziona il volontario: ", 1, volontari.size()) - 1;
     }
 
-    //VER.3
-    // public boolean chiediConfermaEliminazioneVolontario(Volontario volontario) {
-    //     return InputDati.yesOrNo("Sei sicuro di voler eliminare il volontario: " + volontario.getNome() + "?");
-    // }
-
     public Volontario chiediDatiNuovoVolontario() {
         String nome = InputDati.leggiStringaNonVuota("Inserisci il nome del volontario: ");
         String cognome = InputDati.leggiStringaNonVuota("Inserisci il cognome: ");

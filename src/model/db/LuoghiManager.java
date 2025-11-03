@@ -110,25 +110,6 @@ public class LuoghiManager extends DatabaseManager {
         }
     }
 
-    //VER.3
-    // private void rimuoviLuogoDalDatabase(Luogo luogoDaEliminare) {
-    //     String sql = "DELETE FROM luoghi WHERE nome = ?";
-    //     executorService.submit(() -> {
-    //         try (Connection conn = DatabaseConnection.connect();
-    //              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-    //             pstmt.setString(1, luogoDaEliminare.getNome());
-    //             int rowsDeleted = pstmt.executeUpdate();
-    //             if (rowsDeleted > 0) {
-    //                 consoleIO.mostraMessaggio("Luogo rimosso con successo.");
-    //             } else {
-    //                 consoleIO.mostraMessaggio("Errore: Nessun luogo trovato con il nome specificato.");
-    //             }
-    //         } catch (SQLException e) {
-    //             consoleIO.mostraMessaggio("Errore durante la rimozione del luogo: " + e.getMessage());
-    //         }
-    //     });
-    // }
-
     public ConcurrentHashMap<String, Luogo> getLuoghiMap() {
         return luoghiMap;
     }
@@ -136,12 +117,6 @@ public class LuoghiManager extends DatabaseManager {
     public void setLuoghiMap(ConcurrentHashMap<String, Luogo> luoghiMap) {
         this.luoghiMap = luoghiMap;
     }
-
-    //VER.3
-    // public void rimuoviLuogo(Luogo luogoDaEliminare) {
-    //     rimuoviLuogoDalDatabase(luogoDaEliminare);
-    //     luoghiMap.remove(luogoDaEliminare.getNome());
-    // }
 
     public void aggiornaLuoghi(Luogo luogo) {
         aggiornaLuogo(luogo.getNome(), luogo);
