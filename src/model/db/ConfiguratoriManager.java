@@ -16,7 +16,7 @@ public class ConfiguratoriManager extends DatabaseManager {
         super(threadPoolManager);
         caricaConfiguratori();
     }
-    // Metodo per sincronizzare i configuratori
+     
     public void sincronizzaConfiguratori() {
         for (Configuratore configuratore : configuratoriMap.values()) {
             aggiornaConfiguratore(configuratore.getEmail(), configuratore);
@@ -25,7 +25,7 @@ public class ConfiguratoriManager extends DatabaseManager {
     }
     
     //Logiche dei configuratori--------------------------------------------------
-    // Metodo per caricare i configuratori dal database e memorizzarli nella HashMap
+     
     protected void caricaConfiguratori() {
         String sql = "SELECT nome, cognome, email, password FROM configuratori";
         try (Connection conn = DatabaseConnection.connect();
@@ -50,7 +50,7 @@ public class ConfiguratoriManager extends DatabaseManager {
         }
     }
 
-    // Metodo per aggiungere un configuratore al database
+     
     private void aggiungiConfiguratore(Configuratore configuratore) {
         String inserisciSqlConfiguratori = "INSERT INTO configuratori (nome, cognome, email, password, password_modificata) VALUES (?, ?, ?, ?, ?)";
 
@@ -64,37 +64,37 @@ public class ConfiguratoriManager extends DatabaseManager {
             pstmt.executeUpdate();
             consoleIO.mostraMessaggio("Configuratore aggiunto con successo nella tabella 'configuratori'.");
     
-            // Aggiungi anche nella tabella 'utenti_unificati'
+             
             aggiungiUtenteUnificato(configuratore, true);
         } catch (SQLException e) {
             System.err.println("Errore durante l'aggiunta del configuratore: " + e.getMessage());
         }
     }
 
-    // Metodo per aggiornare un configuratore nel database
+     
     protected void aggiornaConfiguratore(String email, Configuratore configuratoreAggiornato) {
         String sqlConfiguratori = "UPDATE configuratori SET nome = ?, cognome = ?, password = ?, email = ? WHERE email = ?";
         String sqlUtentiUnificati = "UPDATE utenti_unificati SET nome = ?, cognome = ?, password = ?, email = ? WHERE email = ?";
     
         executorService.submit(() -> {
             try (Connection conn = DatabaseConnection.connect()) {
-                // Aggiorna la tabella "configuratori"
+                 
                 try (PreparedStatement pstmtConfiguratori = conn.prepareStatement(sqlConfiguratori)) {
                     pstmtConfiguratori.setString(1, configuratoreAggiornato.getNome());
                     pstmtConfiguratori.setString(2, configuratoreAggiornato.getCognome());
                     pstmtConfiguratori.setString(3, configuratoreAggiornato.getPassword());
-                    pstmtConfiguratori.setString(4, configuratoreAggiornato.getEmail()); // Nuova email
-                    pstmtConfiguratori.setString(5, email); // Email corrente
+                    pstmtConfiguratori.setString(4, configuratoreAggiornato.getEmail());  
+                    pstmtConfiguratori.setString(5, email);  
                     pstmtConfiguratori.executeUpdate();
                 }
     
-                // Aggiorna la tabella "utenti_unificati"
+                 
                 try (PreparedStatement pstmtUtentiUnificati = conn.prepareStatement(sqlUtentiUnificati)) {
                     pstmtUtentiUnificati.setString(1, configuratoreAggiornato.getNome());
                     pstmtUtentiUnificati.setString(2, configuratoreAggiornato.getCognome());
                     pstmtUtentiUnificati.setString(3, configuratoreAggiornato.getPassword());
-                    pstmtUtentiUnificati.setString(4, configuratoreAggiornato.getEmail()); // Nuova email
-                    pstmtUtentiUnificati.setString(5, email); // Email corrente
+                    pstmtUtentiUnificati.setString(4, configuratoreAggiornato.getEmail());  
+                    pstmtUtentiUnificati.setString(5, email);  
                     pstmtUtentiUnificati.executeUpdate();
                 }
             } catch (SQLException e) {
@@ -103,33 +103,33 @@ public class ConfiguratoriManager extends DatabaseManager {
         });
     }
 
-    // Metodo per aggiornare un volontario nel database
+     
     public void aggiornaPswConfiguratore(String email, String nuovaPassword) {
         String sqlConfiguratori = "UPDATE configuratori SET password = ?, password_modificata = ? WHERE email = ?";
         String sqlUtentiUnificati = "UPDATE utenti_unificati SET password = ?, password_modificata = ? WHERE email = ?";
     
         executorService.submit(() -> {
             try (Connection conn = DatabaseConnection.connect()) {
-                // Aggiorna la tabella "configuratori"
+                 
                 try (PreparedStatement pstmtConfiguratori = conn.prepareStatement(sqlConfiguratori)) {
                     pstmtConfiguratori.setString(1, nuovaPassword);
-                    pstmtConfiguratori.setBoolean(2, true); // Imposta password_modificata a true
+                    pstmtConfiguratori.setBoolean(2, true);  
                     pstmtConfiguratori.setString(3, email);
                     pstmtConfiguratori.executeUpdate();
                 }
 
-                // Aggiorna la tabella "utenti_unificati"
+                 
                 try (PreparedStatement pstmtUtenti = conn.prepareStatement(sqlUtentiUnificati)) {
                     pstmtUtenti.setString(1, nuovaPassword);
-                    pstmtUtenti.setBoolean(2, true); // Imposta password_modificata a true
+                    pstmtUtenti.setBoolean(2, true);  
                     pstmtUtenti.setString(3, email);
                     pstmtUtenti.executeUpdate();
                 }
     
-                // Aggiorna la tabella "utenti_unificati"
+                 
                 try (PreparedStatement pstmtUtenti = conn.prepareStatement(sqlUtentiUnificati)) {
                     pstmtUtenti.setString(1, nuovaPassword);
-                    pstmtUtenti.setBoolean(2, true); // Imposta password_modificata a true
+                    pstmtUtenti.setBoolean(2, true);  
                     pstmtUtenti.setString(3, email);
                     pstmtUtenti.executeUpdate();
                 }

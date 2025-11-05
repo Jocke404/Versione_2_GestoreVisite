@@ -17,7 +17,7 @@ import src.model.Volontario;
 
 public class DisponibilitaManager{
 
-    // Salva la mappa Volontario -> List<LocalDate> nel DB
+     
     public void salvaDisponibilitaVolontari(Map<Volontario, List<LocalDate>> merged, VolontariManager volontariManager) {
         if (merged == null || merged.isEmpty()) {
             return;
@@ -33,7 +33,7 @@ public class DisponibilitaManager{
             conn.setAutoCommit(false);
             
             try {
-                // Prima elimina tutte le disponibilità esistenti per i volontari interessati
+                 
                 for (Volontario volontario : merged.keySet()) {
                     int id = volontariManager.getIdByEmail(volontario.getEmail());
                     deleteStmt.setInt(1, id);
@@ -41,7 +41,7 @@ public class DisponibilitaManager{
                 }
                 deleteStmt.executeBatch();
                 
-                // Poi inserisce tutte le nuove disponibilità
+                 
                 for (Map.Entry<Volontario, List<LocalDate>> entry : merged.entrySet()) {
                     Volontario volontario = entry.getKey();
                     List<LocalDate> dateDisponibili = entry.getValue();

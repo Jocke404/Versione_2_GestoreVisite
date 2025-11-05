@@ -3,9 +3,9 @@ package src.model;
 import java.util.List;
 
 public class Volontario extends Utente {
-    private List<TipiVisitaClass> tipiDiVisite; // Tipi di visite a cui il volontario è assegnato
+    private List<TipiVisitaClass> tipiDiVisite;  
     
-    // Costruttore, getter e setter
+     
     public Volontario(String nome, String cognome, String email, String password, List<TipiVisitaClass> tipiDiVisite) {
         super(email, password, nome, cognome);
         this.tipiDiVisite = tipiDiVisite;

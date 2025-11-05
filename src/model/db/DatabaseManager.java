@@ -53,7 +53,7 @@ public abstract class DatabaseManager {
         return false;
     }
 
-    //Metodo per aggiungere in utenti unificati
+     
     protected void aggiungiUtenteUnificato(Utente utente, boolean passwordModificata) {
         String nome = utente.getNome();
         String cognome = utente.getCognome();

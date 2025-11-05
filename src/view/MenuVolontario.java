@@ -6,7 +6,7 @@ import src.controller.VolontariController;
 import java.time.LocalDate;
 
 public class MenuVolontario implements Menu {
-    private final VolontariController volontariController; // Updated controller reference
+    private final VolontariController volontariController;  
     private static final String[] OPZIONI_VOLONTARIO = {
         "Visualizza tipi visite assegnate",
         "Inserisci disponibilità",

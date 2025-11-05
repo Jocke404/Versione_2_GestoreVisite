@@ -34,7 +34,7 @@ public class AmbitoTerritoriale {
         try {
             if (ApplicationSettingsDAO.hasTerritorialScope()) return true;
         } catch (Throwable t) {}
-        // fallback legacy: controllo file
+         
         File file = new File(AMBITO_FILE);
         return file.exists();
     }
@@ -56,10 +56,10 @@ public class AmbitoTerritoriale {
         try {
             ok = ApplicationSettingsDAO.setTerritorialScope(lista);
         } catch (Throwable t) {
-            // ignore, ci sarà fallback su file
+             
         }
         if (!ok) {
-            // fallback legacy: scrivi ancora il file
+             
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(AMBITO_FILE))) {
                 for (String comune : ambitoTerritoriale) {
                     writer.write(comune);
@@ -86,7 +86,7 @@ public class AmbitoTerritoriale {
             return;
         }
 
-        // fallback legacy: leggi dal file e migra su DB
+         
         try (BufferedReader reader = new BufferedReader(new FileReader(AMBITO_FILE))) {
             String line;
             List<String> tmp = new ArrayList<>();

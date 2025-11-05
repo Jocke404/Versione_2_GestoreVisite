@@ -80,7 +80,7 @@ public class ApplicationSettingsDAO {
                 if (v != null && !v.trim().isEmpty()) {
                     String s = v.trim();
 
-                    // Se c'è un array JSON, estrai solo il contenuto dentro le parentesi quadre
+                     
                     int idxOpen = s.indexOf('[');
                     int idxClose = s.lastIndexOf(']');
                     String target = s;
@@ -88,7 +88,7 @@ public class ApplicationSettingsDAO {
                         target = s.substring(idxOpen + 1, idxClose);
                     }
 
-                    // Estrai tutte le stringhe tra virgolette solo dal contenuto dell'array
+                     
                     java.util.regex.Pattern p = java.util.regex.Pattern.compile("\"([^\"]+)\"");
                     java.util.regex.Matcher m = p.matcher(target);
                     while (m.find()) {
@@ -96,7 +96,7 @@ public class ApplicationSettingsDAO {
                         if (!item.isEmpty()) result.add(item);
                     }
 
-                    // fallback: se non sono state trovate stringhe tra virgolette, prova a split su newline/virgola
+                     
                     if (result.isEmpty()) {
                         for (String part : target.split("\\R|,")) {
                             String tt = part.trim().replaceAll("[\\[\\]\\{\\}\\\"]", "");
@@ -114,13 +114,13 @@ public class ApplicationSettingsDAO {
     public static boolean setTerritorialScope(List<String> ambiti) {
         String json = toJsonArray(ambiti);
         try (Connection conn = DatabaseConnection.connect()) {
-            // prova UPDATE
+             
             try (PreparedStatement upd = conn.prepareStatement(UPDATE_SQL)) {
                 upd.setString(1, json);
                 int u = upd.executeUpdate();
                 if (u > 0) return true;
             }
-            // se UPDATE non ha aggiornato nulla, prova INSERT
+             
             try (PreparedStatement ins = conn.prepareStatement(INSERT_SQL)) {
                 ins.setString(1, json);
                 ins.executeUpdate();

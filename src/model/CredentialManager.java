@@ -89,13 +89,13 @@ public class CredentialManager {
         return nuovoUtente;
     }
 
-    // Restituisci il tipo_utente dell'utente o null se non autenticato
+     
     public String estraiTipoUtente(String email, String password) {
         String tipo_utente = databaseUpdater.getTipoUtente(email, password);
         return tipo_utente;
     }
 
-    // Controlla se la password è stata modificata
+     
     public boolean isPasswordModificata(String email) {
         Boolean passwordModificata = databaseUpdater.isPasswordModificata(email);
         return passwordModificata;

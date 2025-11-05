@@ -75,7 +75,7 @@ public class ModificaUtilita {
         }
 
         if (!ok) {
-            // fallback legacy: scrivi ancora il file
+             
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(NUMERO_PERSONE_FILE))) {
                 writer.write(String.valueOf(numeroMax));
                 ok = true;

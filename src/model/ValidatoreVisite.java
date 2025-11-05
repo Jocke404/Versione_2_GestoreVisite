@@ -44,7 +44,7 @@ public class ValidatoreVisite {
         try {
             Map<LocalDate, String> precluse = visiteManager.getDatePrecluseMap();
             LocalDate today = LocalDate.now();
-            // rimuovi date passate solo se l'anno non coincide con l'anno corrente
+             
             for (LocalDate d : precluse.keySet()) {
                 if (d.isBefore(today)) {
                     try {
@@ -68,14 +68,14 @@ public class ValidatoreVisite {
                 }
             }
 
-            // se è il primo giorno dell'anno, assicura l'inserimento delle festività fisse
+             
             if (today.getDayOfMonth() == 1 && today.getMonthValue() == 1) {
                 Map<LocalDate, String> holidays = generateFixedHolidays(today.getYear());
                 for (Map.Entry<LocalDate, String> e : holidays.entrySet()) {
                     LocalDate h = e.getKey();
                     String descr = e.getValue();
                     try {
-                        // aggiungi la data preclusa con descrizione (idempotente lato DB)
+                         
                         visiteManager.aggiungiNuovaDataPreclusa(h, descr);
                     } catch (Throwable t) {
                         System.err.println("Errore inserimento festività " + h + ": " + t.getMessage());
@@ -87,7 +87,7 @@ public class ValidatoreVisite {
         }
     }
 
-    // Festività fisse (Italia) — estendi la lista se necessario
+     
     private Map<LocalDate, String> generateFixedHolidays(int year) {
         Map<LocalDate, String> h = new LinkedHashMap<>();
         h.put(LocalDate.of(year, 1, 1), "Capodanno");
@@ -99,7 +99,7 @@ public class ValidatoreVisite {
         h.put(LocalDate.of(year, 12, 8), "Immacolata Concezione");
         h.put(LocalDate.of(year, 12, 25), "Natale");
         h.put(LocalDate.of(year, 12, 26), "Santo Stefano");
-        // Nota: festività mobili (es. Pasqua) non incluse — puoi aggiungerle se necessario
+         
         return h;
     }
 
@@ -113,18 +113,18 @@ public class ValidatoreVisite {
      */
     public boolean isVolontarioDisponibile(String volontarioEmail, LocalDate dataVisita, 
                                          LocalTime oraInizio, int durataMinuti) {
-        // Calcola ora di fine della nuova visita
+         
         LocalTime oraFine = oraInizio.plusMinutes(durataMinuti);
         
-        // Ottieni tutte le visite del volontario nella stessa data
+         
         List<Visita> visiteVolontario = visiteManager.getVisiteMap().values().stream()
                 .filter(v -> v.getVolontario() != null && 
-                             v.getVolontario().contains(volontarioEmail) && // Cerca per email nel campo volontario
+                             v.getVolontario().contains(volontarioEmail) &&  
                              v.getData().equals(dataVisita) &&
-                             !v.getStato().equals("Cancellata")) // Escludi visite cancellate
+                             !v.getStato().equals("Cancellata"))  
                 .collect(Collectors.toList());
         
-        // Verifica sovrapposizioni con visite esistenti
+         
         for (Visita visitaEsistente : visiteVolontario) {
             if (visitaEsistente.getOraInizio() == null) continue;
             
@@ -132,7 +132,7 @@ public class ValidatoreVisite {
             LocalTime fineEsistente = visitaEsistente.getOraInizio()
                                         .plusMinutes(visitaEsistente.getDurataMinuti());
             
-            // Controlla sovrapposizione temporale
+             
             if (siSovrappongono(oraInizio, oraFine, inizioEsistente, fineEsistente)) {
                 return false;
             }
@@ -165,7 +165,7 @@ public class ValidatoreVisite {
             return "Il volontario è già impegnato in un'altra visita nello stesso orario";
         }
         
-        // Altri controlli opzionali
+         
         if (visita.getOraInizio().isBefore(LocalTime.of(9, 0))) {
             return "Orario troppo presto (minimo 09:00)";
         }
@@ -175,7 +175,7 @@ public class ValidatoreVisite {
             return "Orario troppo tardo (massimo 19:00)";
         }
         
-        return ""; // Validazione superata
+        return "";  
     }
 
 
@@ -185,7 +185,7 @@ public class ValidatoreVisite {
                              v.getLuogo().equals(nuovaVisita.getLuogo()))
                 .collect(Collectors.toList());
         
-        // Verifica sovrapposizione con ogni visita esistente
+         
         for (Visita visitaEsistente : visiteEsistenti) {
             if (siSovrappongono(nuovaVisita.getOraInizio(), nuovaVisita.getOraInizio().plusMinutes(nuovaVisita.getDurataMinuti()),
                                 visitaEsistente.getOraInizio(), visitaEsistente.getOraInizio().plusMinutes(visitaEsistente.getDurataMinuti()))) {
@@ -206,10 +206,10 @@ public class ValidatoreVisite {
         final LocalTime FINE_GIORNATA = LocalTime.of(19, 0);
         final LocalTime ULTIMO_ORARIO_CONSENTITO = LocalTime.of(17, 40);
         
-        // Verifica se la durata è compatibile con l'orario di chiusura
+         
         if (INIZIO_GIORNATA.plusMinutes(durataMinuti).isAfter(FINE_GIORNATA)) {
             consoleIO.mostraErrore("Durata troppo lunga: la visita non rientra nell'orario di apertura");
-            return slotDisponibili; // Lista vuota
+            return slotDisponibili;  
         }
         
         LocalTime slotCorrente = INIZIO_GIORNATA;
@@ -217,21 +217,21 @@ public class ValidatoreVisite {
         while (slotCorrente.isBefore(ULTIMO_ORARIO_CONSENTITO)) {
             LocalTime fineVisita = slotCorrente.plusMinutes(durataMinuti);
             
-            // Controllo 1: la visita deve finire entro le 19:00
+             
             if (fineVisita.isAfter(FINE_GIORNATA)) {
-                // Salta questo slot e passa al successivo
+                 
                 slotCorrente = slotCorrente.plusMinutes(30);
                 continue;
             }
             
-            // Controllo 2: nessuna visita può iniziare dopo le 17:40
+             
             if (slotCorrente.isAfter(ULTIMO_ORARIO_CONSENTITO)) {
                 break;
             }
             
             boolean slotLibero = true;
             
-            // Controllo 3: verifica sovrapposizione con visite esistenti
+             
             Visita visitaTemp = new Visita(-1, null, luogo, List.of(), "", data, 0, "", slotCorrente, durataMinuti, 0, 0, false, false);
             
             for (Visita visitaEsistente : visiteGiorno) {

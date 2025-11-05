@@ -60,7 +60,7 @@ public class ConfiguratoriController {
 
     public void aggiungiVolontario() {
         consoleIO.mostraElencoConOggetti(volontariManager.getVolontariMap().values().stream().toList());
-        // Ottieni i dati tramite la View
+         
         Volontario nuovoVolontario = consoleIO.chiediDatiNuovoVolontario();
         if (nuovoVolontario != null && InputDati.yesOrNo("Vuoi confermare e aggiungere il volontario?")) {
             addUtilita.aggiungiVolontario(nuovoVolontario);
@@ -75,7 +75,7 @@ public class ConfiguratoriController {
 
     public void aggiungiLuogo() {
         consoleIO.mostraElencoConOggetti(luoghiManager.getLuoghiMap().values().stream().toList());
-        // Ottieni i dati tramite la View
+         
         Luogo nuovoLuogo = consoleIO.chiediDatiNuovoLuogo(ambitoTerritoriale);
         if (nuovoLuogo != null && InputDati.yesOrNo("Vuoi confermare e aggiungere il luogo?")) {
             addUtilita.aggiungiLuogo(nuovoLuogo);
@@ -351,7 +351,7 @@ public class ConfiguratoriController {
         int sceltaVolontario = consoleIO.chiediSelezioneVolontario(volontari);
         Volontario volontarioSelezionato = volontari.get(sceltaVolontario);
         if (!consoleIO.chiediAnnullaOperazione()) {
-            //addUtilita.rimuoviVisitaDaVolontario(visitaSelezionata, volontarioSelezionato);
+             
             consoleIO.mostraRisultatoAggiornamentoVisitaVolontario(true);
         } else {
             consoleIO.mostraMessaggio("Operazione annullata.");

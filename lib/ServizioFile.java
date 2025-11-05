@@ -47,11 +47,11 @@ public class ServizioFile
 			 			System.out.println(MSG_NO_CHIUSURA + f.getName() );
 					}
 				}
-			} // finally
+			}  
 
 		 return letto;
 		  
-	 } // metodo caricaSingoloOggetto
+	 }  
 	
 	
 	public static void salvaSingoloOggetto (File f, Object daSalvare)
@@ -83,9 +83,9 @@ public class ServizioFile
 			 			System.out.println(MSG_NO_CHIUSURA + f.getName() );
 					}
 				}
-			} // finally
+			}  
 
-	} // metodo salvaSingoloOggetto
+	}  
 
 	public static Properties caricaProperties(File f) {
         Properties p = new Properties();

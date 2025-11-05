@@ -87,7 +87,7 @@ public class MasterController {
                 }
             });
 
-            // programma l'esecuzione ripetuta (una volta ogni 24 ore)
+             
             if (scheduledExecutor == null || scheduledExecutor.isShutdown()) {
                 scheduledExecutor = Executors.newSingleThreadScheduledExecutor(r -> {
                     Thread t = new Thread(r);

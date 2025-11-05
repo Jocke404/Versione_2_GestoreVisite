@@ -141,7 +141,7 @@ public class MenuConfiguratore implements Menu {
                 case 3 -> configuratoriController.rimuoviVolontariDaTipoVisita();
                 case 4 -> configuratoriController.mostraVolontari();
                 case 5 -> configuratoriController.visualizzaVolontariPerTipoVisita();
-                // case 6 -> configuratoriController.eliminaVolontario();
+                 
 
                 case 0 -> tornaIndietro = true;
                 default -> System.out.println("Opzione non valida.");

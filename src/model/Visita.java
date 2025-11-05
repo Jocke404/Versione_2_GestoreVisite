@@ -20,7 +20,7 @@ public class Visita {
     private boolean biglietto;
     private boolean barriereArchitettoniche;
 
-    // Costruttore completo (inclusi tutti i campi)
+     
     public Visita(int id, String titolo, String luogo, List<TipiVisitaClass> tipiVisita, String volontario, 
                 LocalDate data, int maxPersone, String stato, LocalTime oraInizio, 
                 int durataMinuti, int postiPrenotati, int minPartecipanti, boolean biglietto, 

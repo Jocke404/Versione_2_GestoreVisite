@@ -30,7 +30,7 @@ public class AuthenticationController {
                 return false;
             }
 
-            // Gestione password temporanea
+             
             if (!credentialManager.isPasswordModificata(email)) {
                 consoleIO.mostraMessaggio("Hai credenziali temporanee. Ti preghiamo di modificarle.");
                 boolean emailCorretta = consoleIO.chiediConfermaEmail(email);

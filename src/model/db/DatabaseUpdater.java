@@ -20,9 +20,9 @@ public class DatabaseUpdater {
     private final ConfiguratoriManager configuratoriManager;
     private final LuoghiManager luoghiManager;
     private final VisiteManagerDB visiteManagerDB;
-    private final ExecutorService executorService = ThreadPoolController.getInstance().createThreadPool(4); // Inizializza il thread pool
+    private final ExecutorService executorService = ThreadPoolController.getInstance().createThreadPool(4);  
     private Thread aggiornamentoThread;
-    private volatile boolean eseguiAggiornamento = true; // Variabile per controllare il ciclo
+    private volatile boolean eseguiAggiornamento = true;  
 
     public DatabaseUpdater(
         VolontariManager volontariManager, 
@@ -37,12 +37,12 @@ public class DatabaseUpdater {
     }
 
     //Logiche Thread------------------------------------------------------------------
-    // Metodo per sincronizzare i dati dal database in un thread separato
+     
     public void sincronizzaDalDatabase() {
         executorService.submit(() -> {
             if (eseguiAggiornamento) {
                 try {
-                    // Logica per sincronizzare i dati dal database
+                     
                     volontariManager.caricaVolontari();
                     configuratoriManager.caricaConfiguratori();
                     luoghiManager.caricaLuoghi();
@@ -57,38 +57,38 @@ public class DatabaseUpdater {
         });
     }
 
-    // Metodo per avviare la sincronizzazione periodica con un ciclo e sleep
+     
     public void avviaSincronizzazioneConSleep() {
-        eseguiAggiornamento = true; // Assicura che il ciclo sia attivo
+        eseguiAggiornamento = true;  
         aggiornamentoThread = new Thread(() -> {
             while (eseguiAggiornamento) {
                 try {
                     sincronizzaDalDatabase();
-                    Thread.sleep(5000); // Pausa di 5 secondi
+                    Thread.sleep(5000);  
                 } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt(); // Ripristina lo stato di interruzione
-                    break; // Esci dal ciclo se il thread è interrotto
+                    Thread.currentThread().interrupt();  
+                    break;  
                 }
             }
         });
         aggiornamentoThread.start();
     }
 
-    // Metodo per fermare la sincronizzazione periodica con un ciclo e sleep
+     
     public void arrestaSincronizzazioneConSleep() {
-        eseguiAggiornamento = false; // Ferma il ciclo
+        eseguiAggiornamento = false;  
         if (aggiornamentoThread != null) {
-            aggiornamentoThread.interrupt(); // Interrompe il thread se è in attesa
+            aggiornamentoThread.interrupt();  
             try {
-                aggiornamentoThread.join(); // Attende la terminazione del thread
+                aggiornamentoThread.join();  
             } catch (InterruptedException e) {
                 System.err.println("Errore durante l'arresto del thread di aggiornamento.");
-                Thread.currentThread().interrupt(); // Ripristina lo stato di interruzione
+                Thread.currentThread().interrupt();  
             }
         }
     }
 
-    // Metodo per verificare se un record esiste nel database
+     
     private boolean recordEsiste(String sql, Object... parametri) {
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -98,7 +98,7 @@ public class DatabaseUpdater {
             }
     
             try (ResultSet rs = pstmt.executeQuery()) {
-                return rs.next(); // Restituisce true se il record esiste
+                return rs.next();  
             }
         } catch (SQLException e) {
             System.err.println("Errore durante la verifica dell'esistenza del record: " + e.getMessage());
@@ -144,7 +144,7 @@ public class DatabaseUpdater {
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     String dbPassword = rs.getString("password");
-                    // confronto case-sensitive in Java
+                     
                     if (dbPassword != null && dbPassword.equals(password)) {
                         tipo_utente = rs.getString("tipo_utente");
                     }
@@ -163,12 +163,12 @@ public class DatabaseUpdater {
         try (Connection conn = DatabaseConnection.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
     
-            // Imposta il parametro della query
+             
             pstmt.setString(1, email);
     
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    passwordModificata = rs.getBoolean("password_modificata"); // Recupera il valore del campo password_modificata
+                    passwordModificata = rs.getBoolean("password_modificata");  
                 } else {
                     consoleIO.mostraMessaggio("Nessun record trovato per l'email: " + email);
                 }
@@ -185,7 +185,7 @@ public class DatabaseUpdater {
     }
 
     public void startDatabaseSync() {
-        // Avvia la sincronizzazione periodica
+         
         avviaSincronizzazioneConSleep();
     }
 

@@ -137,7 +137,7 @@ public class ConsoleIO implements View{
         return stati[scelta];
     }
 
-    // Selezione di un tipo di visita
+     
     public TipiVisitaClass chiediTipoVisita(List<TipiVisitaClass> tipiVisitaList) {
         mostraMessaggio("Seleziona il tipo di visita:");
         mostraElencoConOggetti(tipiVisitaList);
@@ -592,7 +592,7 @@ public class ConsoleIO implements View{
         }
 
         // FASE 2: Aggiunta tipi di visita
-        // ottieni tutti i tipi disponibili e rimuovi quelli già presenti
+         
         List<TipiVisitaClass> tipiDisponibili = new ArrayList<>(TipiVisitaClass.values());
         tipiDisponibili.removeAll(nuoviTipi);
 
@@ -643,7 +643,7 @@ public class ConsoleIO implements View{
         return new Volontario(nome, cognome, email, password, tipiVisita);
     }
     
-    // Selezione multipla di volontari
+     
     public List<Volontario> chiediVolontariMultipli(List<Volontario> volontariDisponibili) {
         mostraMessaggio("Seleziona i volontari (inserisci i numeri separati da virgola, es. 1,3,5):");
         mostraElencoConOggetti(volontariDisponibili);

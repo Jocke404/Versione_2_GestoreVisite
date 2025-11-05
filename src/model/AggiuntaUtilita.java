@@ -17,7 +17,7 @@ import src.view.ViewUtilita;
 
 public class AggiuntaUtilita {
 
-    // private final DatabaseUpdater databaseUpdater;
+     
     private final VolontariManager volontariManager;
     private final LuoghiManager luoghiManager;
     private final VisiteManagerDB visiteManagerDB;

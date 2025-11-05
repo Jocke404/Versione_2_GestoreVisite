@@ -33,7 +33,7 @@ public class VolontariController {
         this.validatore = validatore;
         this.viewUtilita = viewUtilita;
 
-        // sincronizza le disponibilità in memoria con il DB usando le istanze Volontario del manager
+         
         try {
             this.disponibilita.sincronizzaDisponibilitaVolontari(this.volontariManager);
         } catch (Exception e) {
@@ -57,23 +57,23 @@ public class VolontariController {
         List<Integer> giorniSelezionati = consoleIO.chiediGiorniDisponibili(ym, new ArrayList<>(giorniDisponibili));
         List<LocalDate> dateDisponibili = validatore.filtraDateDisponibili(giorniSelezionati, ym);
 
-        // Se non sono state selezionate date, esci
+         
         if (dateDisponibili == null || dateDisponibili.isEmpty()) {
             consoleIO.mostraMessaggio("Nessuna data selezionata. Operazione annullata.");
             return;
         }
 
-        // Controlla se esistono già disponibilità per il volontario
+         
         List<LocalDate> esistenti = disponibilita.getDisponibilitaVolontario(volontarioCorrente);
         boolean hasEsistenti = esistenti != null && !esistenti.isEmpty();
 
         if (hasEsistenti) {
             consoleIO.mostraMessaggio("Trovate disponibilità precedenti: le nuove date verranno aggiunte (no duplicati).");
-            // merge = true -> aggiunge le nuove date a quelle esistenti evitando duplicati
+             
             disponibilita.salvaDisponibilita(volontarioCorrente, dateDisponibili, volontariManager, true);
         } else {
             consoleIO.mostraMessaggio("Nessuna disponibilità precedente: verranno create le nuove disponibilità.");
-            // merge = false -> sostituisce / crea le disponibilità
+             
             disponibilita.salvaDisponibilita(volontarioCorrente, dateDisponibili, volontariManager, false);
         }
     }
