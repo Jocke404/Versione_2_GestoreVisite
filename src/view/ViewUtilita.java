@@ -343,5 +343,16 @@ public class ViewUtilita {
 
         consoleIO.mostraMessaggio("Il numero massimo di persone iscrivibili da un fruitore è attualmente: " + value);
     }
+
+    public void stampaTipiVisiteAssegnateVolontario(Volontario volontarioCorrente) {
+        List<TipiVisitaClass> tipiVisite = volontarioCorrente.getTipiDiVisite();
+        if (tipiVisite.isEmpty()) {
+            consoleIO.mostraMessaggio("Nessun tipo di visita assegnato al volontario.");
+            return;
+        }
+
+        consoleIO.mostraMessaggio("Tipi di visite assegnate a " + volontarioCorrente.getNome() + " " + volontarioCorrente.getCognome() + ":");
+        consoleIO.mostraElencoConOggetti(tipiVisite);
+    }
     
 }

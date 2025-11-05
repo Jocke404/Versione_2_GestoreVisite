@@ -77,10 +77,6 @@ public class VolontariController {
             disponibilita.salvaDisponibilita(volontarioCorrente, dateDisponibili, volontariManager, false);
         }
     }
-    
-    public void visualizzaVisiteVolontario(){
-        viewUtilita.stampaVisiteVolontario(volontarioCorrente);
-    }
 
     public List<Volontario> getVolontari() {
         return List.copyOf(volontariManager.getVolontariMap().values());
@@ -129,5 +125,9 @@ public class VolontariController {
             disponibilita.salvaDisponibilita(volontarioCorrente, disponibilitaEsistentiMod, 
                                                 volontariManager, false);
         }
+    }
+
+    public void visualizzaTipiVisiteVolontario() {
+        viewUtilita.stampaTipiVisiteAssegnateVolontario(volontarioCorrente);
     }
 }

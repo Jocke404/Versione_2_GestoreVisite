@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public class MenuVolontario implements Menu {
     private final VolontariController volontariController; // Updated controller reference
     private static final String[] OPZIONI_VOLONTARIO = {
-        "Visualizza visite assegnate",
+        "Visualizza tipi visite assegnate",
         "Inserisci disponibilità",
         "Modifica disponibilità",
         "Modifica password",
@@ -27,7 +27,7 @@ public class MenuVolontario implements Menu {
             int chosed = menu.scegli();
 
             switch (chosed) {
-                case 1 -> volontariController.visualizzaVisiteVolontario();
+                case 1 -> volontariController.visualizzaTipiVisiteVolontario();
                 case 2 -> volontariController.raccogliDisponibilitaVolontario();
                 case 3 -> volontariController.modificaDisponibilitaVolontario();
                 case 4 -> volontariController.modificaPassword();
