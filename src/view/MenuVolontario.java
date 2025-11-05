@@ -10,6 +10,7 @@ public class MenuVolontario implements Menu {
     private static final String[] OPZIONI_VOLONTARIO = {
         "Visualizza visite assegnate",
         "Inserisci disponibilità",
+        "Modifica disponibilità",
         "Modifica password",
     };
 
@@ -28,7 +29,8 @@ public class MenuVolontario implements Menu {
             switch (chosed) {
                 case 1 -> volontariController.visualizzaVisiteVolontario();
                 case 2 -> volontariController.raccogliDisponibilitaVolontario();
-                case 3 -> volontariController.modificaPassword();
+                case 3 -> volontariController.modificaDisponibilitaVolontario();
+                case 4 -> volontariController.modificaPassword();
                 case 0 -> goOn = false;
                 default -> System.out.println("Opzione non valida.");
             }

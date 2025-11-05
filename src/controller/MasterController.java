@@ -102,9 +102,10 @@ public class MasterController {
                         System.err.println("Errore gestioneVisiteAuto (scheduler): " + t.getMessage());
                     }
                 }, 5, 5, TimeUnit.SECONDS); 
-            }
-            showMenu();
+            }            
             aggiornaDatabaseAsync();
+            showMenu();
+
         }
     }
 
@@ -168,6 +169,4 @@ public class MasterController {
             consoleIO.mostraMessaggio("Errore nella creazione del menu.");
         }
     }
-
-
 }

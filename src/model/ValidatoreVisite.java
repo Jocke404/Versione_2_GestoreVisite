@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import src.model.db.VisiteManagerDB;
@@ -285,6 +286,14 @@ public class ValidatoreVisite {
             dateDisponibili.add(ym.atDay(giorno));
         }
         return dateDisponibili;
+    }
+
+    public LocalDate filtraDateDisponibiliSingola(List<Integer> giorniSelezionati, YearMonth ym) {
+        List<LocalDate> dates = filtraDateDisponibili(giorniSelezionati, ym);
+        if (dates.size() == 1) {
+            return dates.get(0);
+        }
+        return null;
     }
 
     private boolean isTipoVisitaProgrammabileInGiorno(TipiVisitaClass tipoVisita, String giornoSettimana) {

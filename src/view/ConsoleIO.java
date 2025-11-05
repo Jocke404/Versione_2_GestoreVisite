@@ -727,5 +727,24 @@ public class ConsoleIO implements View{
         return new TipiVisitaClass(newTipo, newTipoDesc);
     }
 
+    public void mostraDisponibilitaEsistenti(List<LocalDate> disponibilitaEsistenti) {
+        mostraMessaggio("Le tue disponibilità attuali sono:");
+        mostraElencoConOggetti(disponibilitaEsistenti);
+    }
+
+    public List<LocalDate> chiediNuoveDisponibilita(List<LocalDate> disponibilitaEsistenti, List<Integer> giorniDisponibili, ValidatoreVisite validatore) {
+        YearMonth ym = YearMonth.now().plusMonths(1);
+        for (LocalDate data : disponibilitaEsistenti) {
+            if (InputDati.yesOrNo("Vuoi modificare la disponibilità per il " + data + "?")) {
+                mostraCalendarioMese(ym, giorniDisponibili);
+                List<Integer> giorniSelezionati = chiediGiorniDisponibili(ym, new ArrayList<>(giorniDisponibili));
+                LocalDate nuovaData = validatore.filtraDateDisponibiliSingola(giorniSelezionati, ym);
+
+                disponibilitaEsistenti.set(disponibilitaEsistenti.indexOf(data), nuovaData);
+            }
+        }
+        return disponibilitaEsistenti;
+    }
+
 
 }

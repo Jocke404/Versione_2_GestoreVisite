@@ -34,6 +34,24 @@ public class Volontario extends Utente {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Volontario)) return false;
+        Volontario that = (Volontario) o;
+        String e1 = this.getEmail();
+        String e2 = that.getEmail();
+        if (e1 == null && e2 == null) return true;
+        if (e1 == null || e2 == null) return false;
+        return e1.trim().equalsIgnoreCase(e2.trim());
+    }
+ 
+    @Override
+    public int hashCode() {
+        String e = getEmail();
+        return e == null ? 0 : e.trim().toLowerCase().hashCode();
+    }
+
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(super.toString())
