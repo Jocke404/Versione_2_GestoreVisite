@@ -8,6 +8,13 @@
             "request": "launch",
             "mainClass": "src.MainVisite",
             "projectName": "Versione_2_GestoreVisite_3b066f2f"
+        },
+        {
+            "type": "java",
+            "name": "MainVisite",
+            "request": "launch",
+            "mainClass": "src.MainVisite",
+            "projectName": "Versione_1_GestoreVisite_e12b04ee"
         }
     ]
 }
